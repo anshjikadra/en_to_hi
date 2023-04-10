@@ -45,6 +45,7 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
 
 
   int id=0;
+  bool isLike=false;
 
 
   final Language _selectedLanguage1 = Languages.english;
@@ -150,7 +151,8 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
       mycontroller.text = widget.m!['text_controller'];
       translated = widget.m!['text_translated'];
       isLike = true;
-      id = widget.m!['id'];
+
+
       print(id);
     }
   }
@@ -195,7 +197,7 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
   Database? db;
   String onchangestring = "";
 
-  bool isLike=false;
+
 
   // -------------------- Image To Text --------------------
   // void getImage(ImageSource source) async {
@@ -931,13 +933,14 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
 
                                                 if(isLike==true)
                                                   {
-                                                    String qry = """insert into TestFav (language_1,text_controller,language_2,text_translated,isFav) values("${language1.toString()}","${mycontroller.text.toString()}","${language2.toString()}","${translated.toString()}","1")""";
 
+                                                    String qry = """insert into TestFav (language_1,text_controller,language_2,text_translated,isFav) values("${language1.toString()}","${mycontroller.text.toString()}","${language2.toString()}","${translated.toString()}","1")""";
                                                     int a = await db!.rawInsert(qry);
                                                     print(a);
-                                                    setState(() {
+                                                    setState((){
                                                       id=a;
                                                     });
+
                                                   }
                                                 else
                                                   {
@@ -945,24 +948,14 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
                                                     String qry="DELETE FROM TestFav WHERE id=${id}";
                                                     await db!.rawDelete(qry);
                                                     print(qry);
-                                                    setState(() {
+                                                    setState(() {});
 
-                                                    });
+
                                                   }
 
 
 
 
-                                                // if(isLike==false)
-                                                //   {
-                                                //     String qry = "DELETE FROM TestFav WHERE id=${widget.m}";
-                                                //
-                                                //     await db!.rawDelete(qry);
-                                                //
-                                                //     setState(() {
-                                                //
-                                                //     });
-                                                //   }
 
 
                                               },
