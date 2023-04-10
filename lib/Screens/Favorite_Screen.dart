@@ -4,6 +4,8 @@ import 'package:en_to_hi/Screens/DbHelper.dart';
 import 'package:en_to_hi/Screens/Home_Screen.dart';
 import 'package:en_to_hi/main.dart';
 
+
+List<Map<String, Object?>> l = [];
 class Favorite_Screen extends StatefulWidget {
   const Favorite_Screen({Key? key}) : super(key: key);
 
@@ -22,7 +24,7 @@ class _Favorite_ScreenState extends State<Favorite_Screen> {
   bool islongpress = false;
 
 
-  List<Map<String, Object?>> l = [];
+
 
 
   @override

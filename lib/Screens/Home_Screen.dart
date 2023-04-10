@@ -22,6 +22,8 @@ import 'package:en_to_hi/main.dart';
 import 'Privacy_Screen.dart';
 import 'Settings_Screen.dart';
 
+
+
 class Home_Screen extends StatefulWidget {
   // const Home_Screen({Key? key}) : super(key: key);
 
@@ -40,6 +42,10 @@ String scannedText = "";
 
 class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
   bool isswitch = false;
+
+
+  int id=0;
+
 
   final Language _selectedLanguage1 = Languages.english;
   final Language _selectedLanguage2 = Languages.lao;
@@ -143,6 +149,9 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
       _selectedLanguage2.name = widget.m!['language_2'];
       mycontroller.text = widget.m!['text_controller'];
       translated = widget.m!['text_translated'];
+      isLike = true;
+      id = widget.m!['id'];
+      print(id);
     }
   }
 
@@ -185,6 +194,8 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
   TextStyle mystyle = const TextStyle(fontSize: 17, color: Color(0xFF666666));
   Database? db;
   String onchangestring = "";
+
+  bool isLike=false;
 
   // -------------------- Image To Text --------------------
   // void getImage(ImageSource source) async {
@@ -739,10 +750,13 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
                                                           backgroundColor:
                                                               greencolor,
                                                           onPressed: () {
+
+
                                                             print("Text Clear");
                                                             mycontroller
                                                                 .clear();
                                                             setState(() {
+
                                                               translated = "";
                                                               sound = false;
                                                               onchangestring =
@@ -888,6 +902,12 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
                                             const SizedBox(width: 15),
                                             InkWell(
                                               onTap: () async {
+
+
+
+
+
+
                                                 Fluttertoast.showToast(
                                                     msg: "Added",
                                                     toastLength:
@@ -900,33 +920,71 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
                                                     textColor: Colors.white,
                                                     fontSize: 16.0);
 
-                                                String language1 =
-                                                    _selectedLanguage1.name;
-                                                String language2 =
-                                                    _selectedLanguage2.name;
 
-                                                String qry =
-                                                    """insert into TestFav (language_1,text_controller,language_2,text_translated,isFav) values("${language1.toString()}","${mycontroller.text.toString()}","${language2.toString()}","${translated.toString()}","1")""";
+                                                String language1 = _selectedLanguage1.name;
+                                                String language2 = _selectedLanguage2.name;
 
-                                                int a =
-                                                    await db!.rawInsert(qry);
+                                                isLike=!isLike;
+                                                setState(() {
 
-                                                print(a);
+                                                });
+
+                                                if(isLike==true)
+                                                  {
+                                                    String qry = """insert into TestFav (language_1,text_controller,language_2,text_translated,isFav) values("${language1.toString()}","${mycontroller.text.toString()}","${language2.toString()}","${translated.toString()}","1")""";
+
+                                                    int a = await db!.rawInsert(qry);
+                                                    print(a);
+                                                    setState(() {
+                                                      id=a;
+                                                    });
+                                                  }
+                                                else
+                                                  {
+
+                                                    String qry="DELETE FROM TestFav WHERE id=${id}";
+                                                    await db!.rawDelete(qry);
+                                                    print(qry);
+                                                    setState(() {
+
+                                                    });
+                                                  }
+
+
+
+
+                                                // if(isLike==false)
+                                                //   {
+                                                //     String qry = "DELETE FROM TestFav WHERE id=${widget.m}";
+                                                //
+                                                //     await db!.rawDelete(qry);
+                                                //
+                                                //     setState(() {
+                                                //
+                                                //     });
+                                                //   }
+
+
                                               },
                                               child: CircleAvatar(
                                                 backgroundColor: Colors.white,
                                                 radius: 23,
                                                 child: Icon(Icons.favorite,
                                                     size: 25,
-                                                    color: greencolor),
+                                                    color:isLike?Colors.deepOrange: greencolor),
                                               ),
                                             ),
                                             const SizedBox(width: 15),
                                             InkWell(
                                               onTap: () {
+
+
                                                 isSpeaking
                                                     ? stop()
                                                     : speak(translated);
+                                                setState(() {
+
+                                                });
                                               },
                                               child: CircleAvatar(
                                                 backgroundColor: Colors.white,
@@ -998,8 +1056,7 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
                             String language1 = _selectedLanguage1.name;
                             String language2 = _selectedLanguage2.name;
                             if (widget.m == null) {
-                              String qry =
-                                  """insert into Test (language_1,text_controller,language_2,text_translated,isFav) values("${language1.toString()}","${mycontroller.text.toString()}","${language2.toString()}","${translated.toString()}","1")""";
+                              String qry = """insert into Test (language_1,text_controller,language_2,text_translated,isFav) values("${language1.toString()}","${mycontroller.text.toString()}","${language2.toString()}","${translated.toString()}","1")""";
 
                               int a = await db!.rawInsert(qry);
 
@@ -1008,8 +1065,7 @@ class _Home_ScreenState extends State<Home_Screen> with WidgetsBindingObserver {
                             else {
                               int id = widget.m!['id'];
 
-                              String qry =
-                                  "update Test set language_1='${language1.toString()}',text_controller='${mycontroller.text.toString()}',language_2='${language2.toString()}',text_translated='${translated.toString()}',isFav='1' where id = '$id'";
+                              String qry = "update Test set language_1='${language1.toString()}',text_controller='${mycontroller.text.toString()}',language_2='${language2.toString()}',text_translated='${translated.toString()}',isFav='1' where id = '$id'";
 
                               int a = await db!.rawUpdate(qry);
 
